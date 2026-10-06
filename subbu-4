@@ -1,0 +1,41 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class DatabaseInsertExample {
+
+    // 1. Define database connection details
+    // Replace 'mydatabase' with your actual database name
+    private static final String URL = "jdbc:mysql://localhost:3306/mydatabase";
+    private static final String USER = "root";
+    private static final String PASSWORD = "password123";
+
+    public static void main(String[] args) {
+        // 2. Define the SQL INSERT query with placeholders (?)
+        String sql = "INSERT INTO employees (name, email, salary) VALUES (?, ?, ?)";
+
+        // 3. Use try-with-resources to automatically close connections and statements
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            
+            System.out.println("Connected to the database successfully!");
+
+            // 4. Bind values to the placeholders (Index starts at 1)
+            preparedStatement.setString(1, "John Doe");
+            preparedStatement.setString(2, "john.doe@example.com");
+            preparedStatement.setDouble(3, 75000.00);
+
+            // 5. Execute the insert operation
+            int rowsInserted = preparedStatement.executeUpdate();
+            
+            if (rowsInserted > 0) {
+                System.out.println("A new employee was inserted successfully!");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Database error occurred:");
+            e.printStackTrace();
+        }
+    }
+}
